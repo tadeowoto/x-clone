@@ -1,10 +1,13 @@
 import { createClient } from "@/app/utils/supabase/server";
 import AuthButtonServer from "./components/AuthButton-server";
 import { redirect } from "next/navigation";
+import PostCard from "./components/PostCard";
 
 export default async function Home() {
   const supabase = await createClient();
-  const { data: posts, error } = await supabase.from("posts").select("*");
+  const { data: posts, error } = await supabase
+    .from("posts")
+    .select("*, users(*)");
   const { data } = await supabase.auth.getSession();
   if (error) {
     console.error("Error:", error);
@@ -15,21 +18,39 @@ export default async function Home() {
   }
 
   return (
-    <main>
+    <main className="min-h-screen bg-black text-white">
       <AuthButtonServer />
-      <h1 className="text-2xl font-bold mb-4">Posts</h1>
-      {posts && posts.length > 0 ? (
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id} className="mb-2">
-              <h2 className="text-xl font-semibold">{post.title}</h2>
-              <p>{post.content}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No posts found.</p>
-      )}
+      <div className="border-b border-white/10" />
+      <section className="w-full">
+        <div className="max-w-2xl mx-auto border-r border-l border-white/10 min-h-screen">
+          <div className="sticky top-0 bg-black/80 backdrop-blur-sm z-10 px-4 py-3 border-b border-white/10">
+            <h1 className="text-xl font-bold">Posts</h1>
+          </div>
+          <div className="flex flex-col">
+            {posts && posts.length > 0 ? (
+              posts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  post={{
+                    content: post.content,
+                    created_at: post.created_at,
+                    user: {
+                      name: post.users.name,
+                      username: post.users.username,
+                      avatar_url: post.users.avatar_url,
+                      created_at: post.users.created_at,
+                    },
+                  }}
+                />
+              ))
+            ) : (
+              <div className="px-4 py-8 text-center text-white/50">
+                <p>No hay posts aun</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
