@@ -8,7 +8,8 @@ export default async function Home() {
   const supabase = await createClient();
   const { data: posts, error } = await supabase
     .from("posts")
-    .select("*, users(*)");
+    .select("*, users(*)")
+    .order("created_at", { ascending: false });
   const { data } = await supabase.auth.getSession();
   if (error) {
     console.error("Error:", error);
