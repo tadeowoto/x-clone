@@ -2,6 +2,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import AuthButtonServer from "./components/AuthButton-server";
 import { redirect } from "next/navigation";
 import PostCard from "./components/PostCard";
+import ComposePostClient from "./components/ComposePostClient";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -23,7 +24,10 @@ export default async function Home() {
       <div className="border-b border-white/10" />
       <section className="w-full">
         <div className="max-w-2xl mx-auto border-r border-l border-white/10 min-h-screen">
-          <div className="sticky top-0 bg-black/80 backdrop-blur-sm z-10 px-4 py-3 border-b border-white/10">
+          <div className="sticky top-0 bg-black/80 backdrop-blur-sm z-10  border-b border-white/10 flex flex-col gap-4">
+            <ComposePostClient
+              avatar_url={data.session.user.user_metadata.avatar_url}
+            />
             <h1 className="text-xl font-bold">Posts</h1>
           </div>
           <div className="flex flex-col">

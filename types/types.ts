@@ -12,4 +12,3 @@ export interface Post  {
     user: UserPost
     created_at: string;
 }
-
